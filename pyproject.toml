@@ -7,8 +7,6 @@ authors = ["Your Name <you@example.com>"]
 [tool.poetry.dependencies]
 python = ">=3.10.0"
 pygame = "^2.1.2"
-dearpygui = "^1.6.2"
-component = "^0.0.1"
 
 [tool.pyright]
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md

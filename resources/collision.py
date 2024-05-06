@@ -76,6 +76,10 @@ class CollisionManager(Resource):
     def ready(self, ecs_controller: EcsController):
         self.time = ecs_controller.get_resource(Time)
 
+    def reset_colliders(self):
+        self.static_colliders = None
+        self.dynamic_colliders = None
+
     def update(self, ecs_controller: EcsController):
         if self.static_colliders is None or self.dynamic_colliders is None:
             self.static_colliders = get_static_colliders(ecs_controller)

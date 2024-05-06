@@ -115,10 +115,9 @@ class EcsController:
         matching_entities = self.query(has, exclude)
         return_value = []
         for entity in matching_entities:
-            matching_components = []
-            for component_type in has:
-                for component in entity.components:
-                    if type(component) == component_type:
-                        matching_components.append(component)
-            return_value.append(matching_components)
+            return_value.append([
+                component for component_type in has
+                for component in entity.components
+                if type(component) == component_type]
+            )
         return return_value

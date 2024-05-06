@@ -15,15 +15,14 @@ class Image(Component):
         self.surface.fill(color)
 
     def ready(self, _: EcsController):
-        self.set_transform()
+        self.get_transform()
 
     def draw(self, _: EcsController, surface: Surface):
         surface.blit(self.surface, self.transform.position)
 
-    def set_transform(self):
+    def get_transform(self) -> Transform:
         for component in self.entity.components:
             if type(component) == Transform:
-                self.transform = component
-                return
+                return component
         raise KeyError(
             f"Component 'Transform' not found for object {self.entity}")
