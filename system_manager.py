@@ -1,14 +1,16 @@
 from pygame import Color
 
-from components.tilemap import Tilemap
 from components.collider import Collider
-from components.mover import Mover
-from components.velocity import Velocity
-from components.transform import Transform
 from components.image import Image
+from components.horizontal_movement import HorizontalMovement
+from components.tilemap import Tilemap
+from components.transform import Transform
+from components.velocity import Velocity
+from components.gravity_user import GravityUser
 from ecs import EcsController
-from resources.time import Time
 from resources.collision import CollisionManager
+from resources.gravity import Gravity
+from resources.time import Time
 
 # Define all systems ABOVE the SystemManager, then place them in the according functions
 # This is to make it easier to order the systems without adding a dependency or setting
@@ -18,17 +20,18 @@ from resources.collision import CollisionManager
 def initialize_resources(ecs_controller: EcsController):
     ecs_controller.add_resource(Time())
     ecs_controller.add_resource(CollisionManager())
+    ecs_controller.add_resource(Gravity())
 
 
 def make_image(ecs_controller: EcsController):
-    ecs_controller.spawn([Transform(),
-                          Collider(),
-                          Image(Color(10, 10, 10))])
-    ecs_controller.spawn([Transform(position=(100, 100)),
-                          Velocity(),
-                          Collider(),
-                          Image(Color(255, 105, 105)),
-                          Mover()])
+    ecs_controller.spawn([
+        Transform(position=(0, 0)),
+        Velocity(),
+        Collider(),
+        Image(Color(255, 105, 105)),
+        HorizontalMovement(),
+        GravityUser(),
+    ])
 
 
 def make_tilemap(ecs_controller: EcsController):

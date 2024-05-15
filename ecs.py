@@ -104,20 +104,23 @@ class EcsController:
     def query(self, has: list[type], exclude: list[type] = []) -> list[Entity]:
         matching = []
         for entity in self.entities:
-            has_checklist = sum(1 for component in entity.components if type(
-                component) in has and type(component) not in exclude)
+            has_checklist = sum(
+                int(type(component) in has and type(component) not in exclude)
+                for component in entity.components)
 
             if has_checklist >= len(has):
                 matching.append(entity)
         return matching
 
-    def query_components(self, has: list[type], exclude: list[type] = []) -> list[list[Component]]:
+    def query_components(self,
+                         has: list[type],
+                         exclude: list[type] = []) -> list[list[Component]]:
         matching_entities = self.query(has, exclude)
         return_value = []
         for entity in matching_entities:
             return_value.append([
                 component for component_type in has
                 for component in entity.components
-                if type(component) == component_type]
-            )
+                if type(component) == component_type
+            ])
         return return_value

@@ -1,4 +1,5 @@
 from pygame import Color, Vector2
+
 # BOOLEANS
 SHOW_FPS: bool = True
 

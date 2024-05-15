@@ -13,22 +13,15 @@ class Velocity(Component):
         self.time: Time
 
     def ready(self, ecs_controller: EcsController):
-        self.set_transform()
-        self.set_time(ecs_controller)
+        self.transform = self.get_transform()
+        self.time = ecs_controller.get_resource(Time)
 
     def update(self, ecs_controller: EcsController):
         self.transform.position += self.vel * self.time.delta_time
 
-    def set_transform(self):
+    def get_transform(self) -> Transform:
         for component in self.entity.components:
             if type(component) == Transform:
-                self.transform = component
-                return
+                return component
         raise KeyError(
-            f"Component '{Transform}' not found for object {self.entity}")
-
-    def set_time(self, ecs: EcsController):
-        query = ecs.get_resource(Time)
-        if type(query) != Time:
-            raise KeyError(f"Could not find resource of type '{Time}'")
-        self.time = query
+            f"Component '{Transform}' not found in entity {self.entity}")
