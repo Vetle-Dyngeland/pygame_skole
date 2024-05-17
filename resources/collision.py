@@ -93,17 +93,20 @@ class CollisionManager(Resource):
 
         self.handle_collisions()
 
-    def handle_collisions(self):
-        dynamic = [(col, col.transform.rect) for col in self.dynamic_colliders]
-        if len(dynamic) == 0:
-            return
 
+  def handle_collisions(self):
+    if len(self.dynamic_colliders) == 0:
+      return
         rects = self.static_colliders + \
             [col.transform.rect for col in self.dynamic_colliders]
 
-        for (col, rect) in dynamic:
-            (new_vel, new_pos) = move(col.transform.rect,
-                                      col.velocity.vel * self.time.delta_time,
-                                      rects)
-            col.transform.pos = new_pos
-            col.velocity.vel = new_vel / self.time.delta_time
+    for col in self.dynamic_colliders:
+      (new_vel, new_pos) = move(col.transform.rect,
+                                col.velocity * self.time.delta_time, rects)
+      col.transform.position = new_pos
+      
+      col.touching_wall = bool(col.velocity.x * self.time.delta_time != new_vel.x)
+      col.velocity.x = new_vel.x / self.time.delta_time
+      
+      col.touching_ground = bool(col.velocity.y * self.time.delta_time != new_vel.y)
+      col.velocity.y = new_vel.y / self.time.delta_time

@@ -1,12 +1,14 @@
+import pygame
 from pygame import Color
 
 from components.collider import Collider
-from components.image import Image
+from components.gravity_user import GravityUser
 from components.horizontal_movement import HorizontalMovement
+from components.image import Image
+from components.jumper import Jumper
 from components.tilemap import Tilemap
 from components.transform import Transform
 from components.velocity import Velocity
-from components.gravity_user import GravityUser
 from ecs import EcsController
 from resources.collision import CollisionManager
 from resources.gravity import Gravity
@@ -24,14 +26,15 @@ def initialize_resources(ecs_controller: EcsController):
 
 
 def make_image(ecs_controller: EcsController):
-    ecs_controller.spawn([
-        Transform(position=(0, 0)),
-        Velocity(),
-        Collider(),
-        Image(Color(255, 105, 105)),
-        HorizontalMovement(),
-        GravityUser(),
-    ])
+  ecs_controller.spawn([
+      Transform(position=(0, 0)),
+      Velocity(0, 0),
+      Collider(),
+      Image(Color(255, 255, 255), pygame.image.load("./files/images/p1_stand.png")),
+      HorizontalMovement(),
+      GravityUser(),
+      Jumper()
+  ])
 
 
 def make_tilemap(ecs_controller: EcsController):

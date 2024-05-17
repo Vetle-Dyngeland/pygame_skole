@@ -8,6 +8,8 @@ class Collider(Component):
   def __init__(self):
     self.transform: Transform
     self.velocity: Velocity | None
+    self.touching_ground: bool = False
+    self.touching_wall: bool = False
 
   def ready(self, _: EcsController):
     self.transform = self.get_transform()

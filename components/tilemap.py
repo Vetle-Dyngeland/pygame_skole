@@ -17,9 +17,9 @@ class Tilemap(Component):
                tile_size: float = constants.DEFAULT_TILE_SIZE):
     self.tile_size: float = tile_size
     self.map_path: str | None = file_path
-    self.tiles: list[list[(int, int)]]
+    self.tiles: list[list[tuple[int, int]]]
     self.image = pygame.image.load(image_path)
-    self.draw_map: list[(Surface, Rect, Rect)]
+    self.draw_map: list[tuple[Surface, Rect, Rect]]
 
   def ready(self, _: EcsController):
     if self.map_path is not None:
@@ -37,6 +37,9 @@ class Tilemap(Component):
           self.load_tile(tile)
 
   def load_tile(self, tile: str):
+    if "^" in tile:
+      self.tiles.extend([self.tiles[-1]] * int(tile.removeprefix("^")))
+      return
     if "*" in tile:
       self.tiles[-1].extend([self.tiles[-1][-1]] * int(tile.removeprefix("*")))
       return
@@ -63,6 +66,6 @@ class Tilemap(Component):
 
         self.draw_map.append((scaled_image, tile_rect, image_rect))
 
-  def draw(self, ecs_controller: EcsController, surface: Surface):
+  def draw(self, _: EcsController, surface: Surface):
     for tile in self.draw_map:
       surface.blit(tile[0], tile[1], tile[2])
