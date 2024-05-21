@@ -45,12 +45,12 @@ class HorizontalMovement(Component):
     def accelerate(self, move_value: float):
         def sign(x): return 0 if x == 0 else abs(x) / x
 
-        self.velocity.vel.x += move_value * self.acceleration_force * self.time.delta_time
-        over_max_speed = abs(self.velocity.vel.x) > self.max_speed
-        moving_same_direction = sign(self.velocity.vel.x) == sign(move_value)
+        self.velocity.x += move_value * self.acceleration_force * self.time.delta_time
+        over_max_speed = abs(self.velocity.x) > self.max_speed
+        moving_same_direction = sign(self.velocity.x) == sign(move_value)
         if over_max_speed and moving_same_direction:
-            self.velocity.vel.x = move_value * self.max_speed
+            self.velocity.x = move_value * self.max_speed
 
     def deccelerate(self):
-        self.velocity.vel.x *= self.decceleration_multi
-        self.velocity.vel.x *= int(abs(self.velocity.vel.x) >= 0.01)
+        self.velocity.x *= self.decceleration_multi
+        self.velocity.x *= int(abs(self.velocity.x) >= 0.01)

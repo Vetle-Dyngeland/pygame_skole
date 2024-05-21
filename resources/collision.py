@@ -16,7 +16,9 @@ def get_collisions(rect: Rect, colliders: list[Rect]) -> list[Rect]:
     return [col for col in close if rect.colliderect(col)]
 
 
-def move(rect: Rect, velocity: Vector2, colliders: list[Rect]) -> (Vector2, Vector2):
+def move(rect: Rect,
+         velocity: Vector2,
+         colliders: list[Rect]) -> tuple[Vector2, Vector2]:
     if rect in colliders:
         colliders.remove(rect)
 
@@ -93,20 +95,22 @@ class CollisionManager(Resource):
 
         self.handle_collisions()
 
+    def handle_collisions(self):
+        if len(self.dynamic_colliders) == 0:
+            return
 
-  def handle_collisions(self):
-    if len(self.dynamic_colliders) == 0:
-      return
         rects = self.static_colliders + \
             [col.transform.rect for col in self.dynamic_colliders]
+        for col in self.dynamic_colliders:
+            (new_vel, new_pos) = move(col.transform.rect,
+                                      col.velocity * self.time.delta_time,
+                                      rects)
+            col.transform.position = new_pos
 
-    for col in self.dynamic_colliders:
-      (new_vel, new_pos) = move(col.transform.rect,
-                                col.velocity * self.time.delta_time, rects)
-      col.transform.position = new_pos
-      
-      col.touching_wall = bool(col.velocity.x * self.time.delta_time != new_vel.x)
-      col.velocity.x = new_vel.x / self.time.delta_time
-      
-      col.touching_ground = bool(col.velocity.y * self.time.delta_time != new_vel.y)
-      col.velocity.y = new_vel.y / self.time.delta_time
+            col.touching_wall = bool(
+                col.velocity.x * self.time.delta_time != new_vel.x)
+            col.velocity.x = new_vel.x / self.time.delta_time
+
+            col.touching_ground = bool(
+                col.velocity.y * self.time.delta_time != new_vel.y)
+            col.velocity.y = new_vel.y / self.time.delta_time

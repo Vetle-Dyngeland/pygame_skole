@@ -86,22 +86,11 @@ class EcsController:
         self.entities.append(entity)
         return entity
 
-<<<<<<< HEAD
-    # EXPENSIVE
     def get_components(self, component_type: type) -> list[Component]:
-        components: list[Component] = []
-        for entity in self.entities:
-            for component in entity.components:
-                if type(component) == component_type:
-                    components.append(component)
-        return components
-=======
-  def get_components(self, component_type: type) -> list[Component]:
-    return [
-        c for e in self.entities for c in e.components
-        if type(c) == component_type
-    ]
->>>>>>> 6c1cc2c (school stuff, mostly movement and tilemap and the like)
+        return [
+            c for e in self.entities for c in e.components
+            if type(c) == component_type
+        ]
 
     def get_resource(self, resource_type: type) -> Resource | None:
         for resource in self.resources:
