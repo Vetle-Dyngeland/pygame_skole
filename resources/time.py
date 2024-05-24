@@ -25,5 +25,5 @@ class Time(Resource):
         if not SHOW_FPS:
             return
 
-        text = self.font.render(f"{1 / self.delta_time}", False, (0, 0, 0))
+        text = self.font.render(f"{round(1 / self.delta_time*1000)/1000}", False, (0, 0, 0))
         surface.blit(text, (0, 0))

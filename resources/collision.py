@@ -48,7 +48,7 @@ def get_all_tilemap_rects(ecs: EcsController) -> list[Rect]:
         t[0] for t in ecs.query_components([Tilemap, Collider])
     ]
 
-    return [t[1] for tilemap in tilemaps for t in tilemap.draw_map]
+    return [t[0] for tilemap in tilemaps for t in tilemap.draw_map]
 
 
 def get_all_collidable_rects(ecs: EcsController,
