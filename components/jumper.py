@@ -9,7 +9,7 @@ import pygame
 class Jumper(Component):
     def __init__(self,
                  key: int = pygame.K_UP,
-                 jump_force: float = 400,
+                 jump_force: float = 600,
                  coyote_time: float = 0.4,
                  jump_buffer: float = 0.2):
         self.jump_key: int = key

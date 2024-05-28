@@ -1,10 +1,14 @@
-from pygame import Rect, Vector2
+from pygame import Rect, Vector2, quit
 
 from components.collider import Collider
 from components.tilemap import Tilemap
 from components.velocity import Velocity
 from ecs import EcsController, Resource
 from resources.time import Time
+
+DANGERS: list[int] = [7, 0]
+
+DIE_COUNTER_MAX = 1
 
 
 def get_collisions(rect: Rect, colliders: list[Rect]) -> list[Rect]:
@@ -43,12 +47,19 @@ def move(rect: Rect,
     return (velocity, Vector2(rect.topleft))
 
 
+def is_danger(tile_rect: Rect, tilemap: Tilemap) -> bool:
+    print([int(tile_rect.x / tilemap.tile_size),
+           int(tile_rect.y / tilemap.tile_size)])
+    return [int(tile_rect.x / tilemap.tile_size),
+            int(tile_rect.y / tilemap.tile_size)] == DANGERS
+
+
 def get_all_tilemap_rects(ecs: EcsController) -> list[Rect]:
     tilemaps: list[Tilemap] = [
         t[0] for t in ecs.query_components([Tilemap, Collider])
     ]
 
-    return [t[0] for tilemap in tilemaps for t in tilemap.draw_map]
+    return [t[0] for tilemap in tilemaps for t in tilemap.draw_map if not is_danger(t[1], tilemap)]
 
 
 def get_all_collidable_rects(ecs: EcsController,
@@ -64,7 +75,7 @@ def get_static_colliders(ecs: EcsController) -> list[Rect]:
     colliders = [
         c[0] for c in ecs.query_components([Collider], [Tilemap, Velocity])
     ]
-    return get_all_collidable_rects(ecs, colliders=colliders)
+    return get_all_collidable_rects(ecs, colliders)
 
 
 def get_dynamic_colliders(ecs: EcsController) -> list[Collider]:
@@ -74,11 +85,19 @@ def get_dynamic_colliders(ecs: EcsController) -> list[Collider]:
     ]
 
 
+def get_dangerous(ecs: EcsController) -> list[Rect]:
+    tilemaps = [
+        c[0] for c in ecs.query_components([Tilemap, Collider])
+    ]
+    return [t[0] for tilemap in tilemaps for t in tilemap.draw_map if is_danger(t[1], tilemap)]
+
+
 class CollisionManager(Resource):
 
     def __init__(self):
         self.static_colliders: list[Rect] = []
         self.dynamic_colliders: list[Collider] = []
+        self.dangerous_oo: list[Rect] = []
         self.time: Time
 
     def ready(self, ecs_controller: EcsController):
@@ -87,11 +106,13 @@ class CollisionManager(Resource):
     def reset_colliders(self):
         self.static_colliders = []
         self.dynamic_colliders = []
+        self.dangerous_oo = []
 
     def update(self, ecs_controller: EcsController):
         if len(self.static_colliders) == 0 or len(self.dynamic_colliders) == 0:
             self.static_colliders = get_static_colliders(ecs_controller)
             self.dynamic_colliders = get_dynamic_colliders(ecs_controller)
+            self.dangerous_oo = get_dangerous(ecs_controller)
 
         self.handle_collisions()
 
@@ -114,3 +135,7 @@ class CollisionManager(Resource):
             col.touching_ground = bool(
                 col.velocity.y * self.time.delta_time != new_vel.y)
             col.velocity.y = new_vel.y / self.time.delta_time
+
+        for col in self.dynamic_colliders:
+            if len(get_collisions(col.transform.get_rect(), self.dangerous_oo)):
+                quit()

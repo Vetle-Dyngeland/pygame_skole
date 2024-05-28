@@ -5,7 +5,7 @@ from ecs import Resource, EcsController
 
 class Gravity(Resource):
 
-    def __init__(self, force: float = 1000):
+    def __init__(self, force: float = 1500):
         self.force: float = force
         self.time: Time
         self.gravity_users: list[GravityUser] = []
