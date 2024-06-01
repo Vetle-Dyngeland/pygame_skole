@@ -6,7 +6,7 @@ from components.velocity import Velocity
 from ecs import EcsController, Resource
 from resources.time import Time
 
-DANGERS: list[int] = [7, 0]
+DANGERS: list[list[int]] = [[7, 0], [5, 11], [4, 12]]
 
 DIE_COUNTER_MAX = 1
 
@@ -51,7 +51,7 @@ def is_danger(tile_rect: Rect, tilemap: Tilemap) -> bool:
     print([int(tile_rect.x / tilemap.tile_size),
            int(tile_rect.y / tilemap.tile_size)])
     return [int(tile_rect.x / tilemap.tile_size),
-            int(tile_rect.y / tilemap.tile_size)] == DANGERS
+            int(tile_rect.y / tilemap.tile_size)] in DANGERS
 
 
 def get_all_tilemap_rects(ecs: EcsController) -> list[Rect]:

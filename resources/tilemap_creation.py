@@ -92,7 +92,7 @@ class TilemapCreation(Resource):
 
         self.expand_tilemap_to(self.selected_tile[0], self.selected_tile[1])
         self.tilemap.tiles[self.selected_tile[0]
-                           ][self.selected_tile[1]] = self.brush
+                           ][self.selected_tile[1]] = self.brush.copy()
         self.set_draw_map_tile()
 
     def set_draw_map_tile(self):
